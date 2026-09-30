@@ -1,0 +1,28 @@
+[Unit]
+Description=Cronstash - Automated Backup Manager for PostgreSQL 18 & RDF4J
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/cronstash/backend
+ExecStart=/opt/cronstash/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2 --proxy-headers
+Restart=always
+RestartSec=5s
+
+# System environment variables
+Environment=PYTHONUNBUFFERED=1
+Environment=CRONSTASH_APP_ROOT=/opt/cronstash
+Environment=CRONSTASH_DB_PATH=/var/lib/cronstash/cronstash.db
+Environment=CRONSTASH_BACKUP_PATH=/backup/cronstash
+Environment=CRONSTASH_CRON_FILE=/etc/cron.d/cronstash
+Environment=CRONSTASH_CRON_LOG=/var/log/cronstash/cron.log
+Environment=CRONSTASH_PYTHON=/opt/cronstash/venv/bin/python
+
+# Resource limits & Security hardening
+LimitNOFILE=65535
+TimeoutStopSec=30s
+
+[Install]
+WantedBy=multi-user.target
