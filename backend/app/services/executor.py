@@ -127,7 +127,8 @@ async def execute_rdf4j_backup(
         # Format curl with auth if present
         auth_opt = f"-u '{server.username}:{server.password}' " if (server.username and server.password) else ""
         shell_cmd = (
-            f"curl -s -S {auth_opt}-H 'Accept: application/x-turtle' '{endpoint}' "
+            f"set -o pipefail; "
+            f"curl -fsSL {auth_opt}-H 'Accept: text/turtle, application/x-turtle' '{endpoint}' "
             f"| gzip > '{output_file}'"
         )
         try:
